@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://kit.fontawesome.com/ce18e6872f.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="todo-app">
+      <h1>to do list<i class="fa-solid fa-pencil"></i></h1>
+      <div class="row">
+        <input type="text" id="input-box" placeholder="Add your text">
+        <button onclick="addTask()">ADD</button>
+      </div>
+      <ul id="list-container">
+        <!-- Tasks will be populated here -->
+      </ul>
+    </div>
+  </div>
+  <script>
+    const inpBox = document.getElementById('input-box');
+    const listContainer = document.getElementById('list-container');
+
+    const addTask = () => {
+      if (inpBox.value === '') {
+        alert('You must write something');
+      } else {
+        let li = document.createElement('li');
+        li.innerHTML = inpBox.value;
+        listContainer.appendChild(li);
+
+        let span = document.createElement('span');
+        span.innerHTML = `<i class="fas fa-times"></i>`;
+        li.appendChild(span);
+
+        // Add an event listener to delete the task when the 'X' is clicked
+        span.addEventListener('click', function() {
+          li.remove(); // Remove the corresponding 'li' on click
+          saveData(); // Save data after removal
+        });
+
+        inpBox.value = '';
+        saveData(); // Save data after addition
+      }
+    };
+
+    // local storage
+    const saveData = () => {
+      localStorage.setItem('data', JSON.stringify(listContainer.innerHTML));
+    };
+
+    // Load data when the page loads
+    const showData = () => {
+      if (localStorage.getItem('data')) {
+        listContainer.innerHTML = JSON.parse(localStorage.getItem('data'));
+
+        // Reattach event listeners to the 'X' buttons
+        const deleteButtons = document.querySelectorAll('#list-container span');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            button.parentElement.remove(); // Remove the corresponding 'li' on click parrent element span tag ka father li hai  so li ko remove krne ke liye
+            saveData(); // Save data after removal
+          });
+        });
+      }
+    };
+
+    showData();
+  </script>
+</body>
+</html>
+
